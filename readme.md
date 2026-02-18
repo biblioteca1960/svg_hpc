@@ -114,7 +114,7 @@ svg-hpc/
 │   ├── test_mesh.py                     # Mesh generation tests (48 tests)
 │   ├── test_physics.py                   # Physics kernels tests (52 tests)
 │   └── test_integration.py                # Integration tests (20+ tests)
-├── 📁 docs/                        # Configuration files
+├── 📁 docs/                        
 │   ├── technical_memo.pdf
 │
 ├── 🚀 svg_simulation_v3.0.py            # Main simulation entry point
@@ -642,5 +642,11 @@ Barcelona Supercomputing Center
 Plaza Eusebi Güell, 1-3  
 08034 Barcelona, Spain
 
+### Clay Mathematics Institute
+1624 Market Street
+Suite 226 #17261
+Denver, CO  80202-2523
+USA
 ---
+
 
