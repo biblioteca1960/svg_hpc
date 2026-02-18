@@ -1,0 +1,186 @@
+{
+    "metadata": {
+        "version": "3.0",
+        "description": "Default configuration for SVG simulation - Development/Testing",
+        "author": "L. Morató de Dalmases",
+        "date": "2026-02-18"
+    },
+    
+    "simulation": {
+        "general": {
+            "n_nodes": 1000000,
+            "n_steps": 1000,
+            "dt_initial": 1.0,
+            "dt_min": 0.01,
+            "dt_max": 10.0,
+            "adaptive_timestep": true,
+            "cfl_number": 0.5
+        },
+        
+        "output": {
+            "output_freq": 50,
+            "checkpoint_freq": 200,
+            "chunk_size": 10000,
+            "output_dir": "output_test",
+            "checkpoint_dir": "checkpoints_test",
+            "save_hdf5": true,
+            "save_vtu": true,
+            "compression": true,
+            "write_ghosts": false
+        },
+        
+        "parallel": {
+            "use_gpu": false,
+            "gpu_ranks": [],
+            "mpi_ranks_min": 1,
+            "mpi_ranks_max": 16,
+            "openmp_threads": 4,
+            "load_balance": true,
+            "dynamic_scheduling": true
+        }
+    },
+    
+    "physics": {
+        "svg_constants": {
+            "delta_deg": 6.8,
+            "tau": 0.0685,
+            "eta_eff": 1.34e-19,
+            "kappa": 1.0,
+            "gamma": 0.1,
+            "hub_threshold": 0.1,
+            "c": 299792458.0
+        },
+        
+        "initial_conditions": {
+            "phase_distribution": "random",
+            "phase_mean": 0.0,
+            "phase_std": 1.0,
+            "phase_min": 0.0,
+            "phase_max": 6.28318530718,
+            "position_distribution": "uniform",
+            "position_min": -10.0,
+            "position_max": 10.0,
+            "seed": 42
+        },
+        
+        "boundary_conditions": {
+            "type": "periodic",
+            "reflective": false,
+            "absorbing": false,
+            "buffer_zone": 0.1
+        },
+        
+        "hub_detection": {
+            "enabled": true,
+            "threshold": 0.8,
+            "min_cluster_size": 5,
+            "coherence_window": 10,
+            "track_history": true,
+            "max_hubs": 10000
+        },
+        
+        "torsion": {
+            "compute_gradient": true,
+            "gradient_method": "finite_difference",
+            "smoothing": 0.0,
+            "nonlinearity": 0.1
+        }
+    },
+    
+    "mesh": {
+        "dimension": 4,
+        "type": "delaunay",
+        "n_neighbors_avg": 24,
+        "generate_new": true,
+        "mesh_file": null,
+        "refine_regions": [],
+        "refine_factor": 1.0,
+        "periodic": true
+    },
+    
+    "numerics": {
+        "solver": {
+            "type": "explicit_euler",
+            "order": 1,
+            "stability_check": true,
+            "max_gradient": 0.1
+        },
+        
+        "neighbor_search": {
+            "method": "kdtree",
+            "kdtree_leaf_size": 20,
+            "max_neighbors": 50,
+            "search_radius": 2.0
+        },
+        
+        "precision": {
+            "real_type": "float64",
+            "use_fma": true,
+            "fpe_trap": false
+        }
+    },
+    
+    "validation": {
+        "enabled": true,
+        "validation_freq": 100,
+        "metrics": {
+            "phase_variance": true,
+            "torsion_rms": true,
+            "hub_density": true,
+            "power_spectrum": true,
+            "cmb_birefringence": true,
+            "tully_fisher": true
+        },
+        
+        "targets": {
+            "phase_variance": 0.1,
+            "torsion_rms_mt": 7.7,
+            "hub_density_mpc3": 1e-6,
+            "cmb_beta_deg": 0.351,
+            "tully_fisher_n": 4.0
+        },
+        
+        "tolerances": {
+            "phase_variance": 0.05,
+            "torsion_rms": 0.3,
+            "hub_density": 0.5,
+            "cmb_beta": 0.01,
+            "tully_fisher": 0.1
+        }
+    },
+    
+    "performance": {
+        "monitoring": {
+            "enabled": true,
+            "log_freq": 10,
+            "profile_mpi": true,
+            "profile_cuda": false,
+            "memory_tracking": true
+        },
+        
+        "optimization": {
+            "vectorize": true,
+            "cache_blocking": true,
+            "prefetch": true,
+            "simd": true
+        },
+        
+        "io": {
+            "async_write": true,
+            "buffer_size_mb": 256,
+            "collective_buffers": true,
+            "defer_hubs_io": true
+        }
+    },
+    
+    "debug": {
+        "level": "INFO",
+        "verbose": false,
+        "check_nan": true,
+        "check_inf": true,
+        "assertions": false,
+        "trace": false,
+        "log_file": "svg_sim.log",
+        "rank0_only_log": true
+    }
+}

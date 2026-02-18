@@ -1,0 +1,308 @@
+{
+    "metadata": {
+        "version": "3.0-production",
+        "description": "Production configuration for SVG simulation - BSC MareNostrum 5",
+        "author": "L. Morató de Dalmases",
+        "date": "2026-02-18",
+        "target_machine": "MareNostrum5",
+        "allocation": "bsc40",
+        "expected_runtime_hours": 48
+    },
+    
+    "simulation": {
+        "general": {
+            "n_nodes": 100000000,
+            "n_steps": 10000,
+            "dt_initial": 1.0,
+            "dt_min": 0.001,
+            "dt_max": 5.0,
+            "adaptive_timestep": true,
+            "cfl_number": 0.3
+        },
+        
+        "output": {
+            "output_freq": 50,
+            "checkpoint_freq": 500,
+            "chunk_size": 100000,
+            "output_dir": "/gpfs/projects/bsc40/svg_output",
+            "checkpoint_dir": "/gpfs/projects/bsc40/svg_checkpoints",
+            "save_hdf5": true,
+            "save_vtu": true,
+            "compression": true,
+            "compression_level": 5,
+            "write_ghosts": false,
+            "parallel_io": true,
+            "io_ranks": 32
+        },
+        
+        "parallel": {
+            "use_gpu": true,
+            "gpu_ranks": "alternating",
+            "gpu_per_node": 4,
+            "mpi_ranks": 1024,
+            "mpi_ranks_per_node": 1,
+            "openmp_threads": 128,
+            "load_balance": true,
+            "dynamic_scheduling": false,
+            "pin_cores": true,
+            "numa_aware": true
+        }
+    },
+    
+    "physics": {
+        "svg_constants": {
+            "delta_deg": 6.8,
+            "tau": 0.0685,
+            "eta_eff": 1.34e-19,
+            "kappa": 1.0,
+            "gamma": 0.1,
+            "hub_threshold": 0.1,
+            "c": 299792458.0
+        },
+        
+        "initial_conditions": {
+            "phase_distribution": "gaussian",
+            "phase_mean": 0.0,
+            "phase_std": 0.5,
+            "phase_min": -3.14159,
+            "phase_max": 3.14159,
+            "position_distribution": "radial",
+            "position_scale": 100.0,
+            "position_exponent": 1.0,
+            "seed": 123456789
+        },
+        
+        "boundary_conditions": {
+            "type": "absorbing",
+            "reflective": false,
+            "absorbing": true,
+            "buffer_zone": 0.2,
+            "absorption_strength": 0.1
+        },
+        
+        "hub_detection": {
+            "enabled": true,
+            "threshold": 0.85,
+            "min_cluster_size": 10,
+            "coherence_window": 20,
+            "track_history": true,
+            "max_hubs": 100000,
+            "merge_hubs": true,
+            "merge_distance": 0.1
+        },
+        
+        "torsion": {
+            "compute_gradient": true,
+            "gradient_method": "least_squares",
+            "smoothing": 0.01,
+            "nonlinearity": 0.15,
+            "feedback_coupling": true
+        },
+        
+        "dark_matter": {
+            "model": "geometric",
+            "coupling_strength": 1.0,
+            "scale_dependent": true
+        }
+    },
+    
+    "mesh": {
+        "dimension": 4,
+        "type": "delaunay",
+        "n_neighbors_avg": 30,
+        "generate_new": false,
+        "mesh_file": "/gpfs/projects/bsc40/svg_mesh/mesh_4d_100M.h5",
+        "partition_method": "metis",
+        "refine_regions": [
+            {
+                "center": [0, 0, 0, 0],
+                "radius": 10.0,
+                "factor": 2.0
+            }
+        ],
+        "refine_factor": 1.5,
+        "periodic": false,
+        "load_balance_mesh": true
+    },
+    
+    "numerics": {
+        "solver": {
+            "type": "rk4",
+            "order": 4,
+            "stability_check": true,
+            "max_gradient": 0.05,
+            "error_tolerance": 1e-6
+        },
+        
+        "neighbor_search": {
+            "method": "kdtree",
+            "kdtree_leaf_size": 50,
+            "max_neighbors": 60,
+            "search_radius": 3.0,
+            "cache_neighbors": true
+        },
+        
+        "precision": {
+            "real_type": "float64",
+            "use_fma": true,
+            "fpe_trap": false,
+            "ftz": true,
+            "precise_math": false
+        },
+        
+        "linear_algebra": {
+            "library": "mkl",
+            "num_threads": 128,
+            "sparse": false
+        }
+    },
+    
+    "validation": {
+        "enabled": true,
+        "validation_freq": 200,
+        "metrics": {
+            "phase_variance": true,
+            "torsion_rms": true,
+            "hub_density": true,
+            "power_spectrum": true,
+            "cmb_birefringence": true,
+            "tully_fisher": true,
+            "correlation_length": true,
+            "mass_function": true
+        },
+        
+        "targets": {
+            "phase_variance": 0.12,
+            "torsion_rms_mt": 7.7,
+            "hub_density_mpc3": 1.2e-6,
+            "cmb_beta_deg": 0.351,
+            "tully_fisher_n": 4.0,
+            "correlation_length_mpc": 150.0
+        },
+        
+        "tolerances": {
+            "phase_variance": 0.03,
+            "torsion_rms": 0.2,
+            "hub_density": 0.3,
+            "cmb_beta": 0.005,
+            "tully_fisher": 0.05,
+            "correlation_length": 20.0
+        },
+        
+        "observational_data": {
+            "simons_observatory": "/gpfs/projects/bsc40/observations/simons_2025.h5",
+            "tully_fisher": "/gpfs/projects/bsc40/observations/tf_catalog.h5",
+            "magnetic_fields": "/gpfs/projects/bsc40/observations/b_fields.h5",
+            "lss": "/gpfs/projects/bsc40/observations/lss_sdss.h5"
+        }
+    },
+    
+    "performance": {
+        "monitoring": {
+            "enabled": true,
+            "log_freq": 10,
+            "profile_mpi": true,
+            "profile_cuda": true,
+            "memory_tracking": true,
+            "io_tracking": true,
+            "flops_counting": true,
+            "power_monitoring": true
+        },
+        
+        "optimization": {
+            "vectorize": true,
+            "cache_blocking": true,
+            "prefetch": true,
+            "simd": true,
+            "fma": true,
+            "unroll_loops": true,
+            "align_memory": 64
+        },
+        
+        "io": {
+            "async_write": true,
+            "buffer_size_mb": 1024,
+            "collective_buffers": true,
+            "defer_hubs_io": true,
+            "lustre_stripe_count": 8,
+            "lustre_stripe_size_mb": 64,
+            "hdf5_alignment": 1048576
+        },
+        
+        "cuda": {
+            "blocks_per_grid": 1024,
+            "threads_per_block": 256,
+            "shared_memory_bytes": 49152,
+            "streams": 4,
+            "pinned_memory": true,
+            "unified_memory": false
+        }
+    },
+    
+    "debug": {
+        "level": "WARNING",
+        "verbose": false,
+        "check_nan": true,
+        "check_inf": true,
+        "assertions": false,
+        "trace": false,
+        "log_file": "/gpfs/projects/bsc40/logs/svg_sim_${SLURM_JOB_ID}.log",
+        "rank0_only_log": true,
+        "cuda_debug": false,
+        "mpi_debug": false
+    },
+    
+    "resources": {
+        "estimated_memory_gb": 64,
+        "estimated_disk_tb": 50,
+        "estimated_flops": 1e18,
+        "checkpoint_restart": true,
+        "max_walltime_hours": 48,
+        "job_dependency": null,
+        "reservation": null
+    },
+    
+    "ml": {
+        "surrogate_training": {
+            "enabled": true,
+            "train_freq": 1000,
+            "model_type": "random_forest",
+            "train_fraction": 0.8,
+            "validation_fraction": 0.1,
+            "test_fraction": 0.1,
+            "features": ["x", "y", "z", "phase", "hub_potential", "w_coord"],
+            "target": "tau",
+            "save_model": true,
+            "model_path": "/gpfs/projects/bsc40/models/torsion_predictor.pkl"
+        },
+        
+        "inference": {
+            "enabled": true,
+            "batch_size": 100000,
+            "use_gpu_inference": true
+        }
+    },
+    
+    "postprocessing": {
+        "scripts": [
+            {
+                "name": "combine_vtu",
+                "script": "svg_postprocess_v3.0.py",
+                "args": ["--step=9999", "--visualize", "--train-ai"],
+                "run_after": true
+            },
+            {
+                "name": "validate",
+                "script": "validate_with_observations.py",
+                "args": ["--plot", "--output=validation_final.json"],
+                "run_after": true
+            },
+            {
+                "name": "generate_figures",
+                "script": "generate_figures.py",
+                "args": ["--all"],
+                "run_after": true
+            }
+        ]
+    }
+}
