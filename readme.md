@@ -642,12 +642,14 @@ Barcelona Supercomputing Center
 Plaza Eusebi Güell, 1-3  
 08034 Barcelona, Spain
 
-Clay Mathematics Institute
+Clay Mathematics Institute  
 1624 Market Street
 Suite 226 #17261
-Denver, CO  80202-2523
-USA
+Denver, CO  80202-2523, USA
+
+
 ---
+
 
 
 
