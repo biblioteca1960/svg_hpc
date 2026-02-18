@@ -1,0 +1,50 @@
+name: svg_hpc
+channels:
+  - defaults
+  - conda-forge
+  - pytorch
+dependencies:
+  # Core Python
+  - python=3.9
+  - pip
+  - numpy=1.23
+  - scipy=1.9
+  - h5py=3.7
+  - numba=0.56
+  
+  # MPI
+  - mpi4py=3.1
+  - openmpi=4.1
+  
+  # GPU
+  - cudatoolkit=11.7
+  - cupy=11.0
+  
+  # Visualization
+  - pyvista=0.37
+  - vtk=9.1
+  - matplotlib=3.5
+  
+  # AI/ML
+  - scikit-learn=1.1
+  - pytorch=1.13
+  - torchvision
+  - tensorboard
+  
+  # Data processing
+  - pandas=1.4
+  - xarray=2022.6
+  
+  # Development
+  - jupyterlab
+  - ipython
+  - pytest
+  - black
+  
+  # Pip packages
+  - pip:
+    - pyevtk==1.5.0
+    - meshio==5.3.4
+    - tqdm
+    - psutil
+    - nvidia-ml-py3
